@@ -20,7 +20,7 @@ Frame 7: Glow intensifies; feet brace.
 Frame 8: Wizard’s face turns stern; fire begins circling orb.
 Frame 9: Final wind-up pose — staff high, glow pulsing, fire swirling.
 
-Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Druid action. 
+Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Wizard action. 
 
 Frame Sequence:   
 Frames should be arranged from left-to-right, top-to-bottom:
@@ -46,7 +46,7 @@ Frame 7: Wizard begins motion to thrust the staff.
 Frame 8: Fire concentrates into the orb.
 Frame 9: Final charge frame — orb is blinding white/yellow.
 
-Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Druid action. 
+Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Wizard action. 
 
 Frame Sequence:   
 Frames should be arranged from left-to-right, top-to-bottom:
@@ -72,7 +72,7 @@ Frame 7: Blast starts shrinking, embers fly out.
 Frame 8: Blast fades; staff begins to lower.
 Frame 9: Staff halfway down; smoke trails remain.
 
-Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Druid action. 
+Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Wizard action. 
 
 Frame Sequence:   
 Frames should be arranged from left-to-right, top-to-bottom:
@@ -98,7 +98,7 @@ Frame 7: Expression softens, eyes widen.
 Frame 8: Glow fades out completely.
 Frame 9: Back to full idle pose — cycle complete.
 
-Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Druid action. 
+Ensure each keyframe transitions smoothly and continuously into the next, clearly illustrating the Wizard action. 
 
 Frame Sequence:   
 Frames should be arranged from left-to-right, top-to-bottom:
