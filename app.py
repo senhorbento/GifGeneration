@@ -3,68 +3,80 @@ import os
 import numpy as np
 from PIL import Image, ImageDraw, ImageSequence
 
-image = input("Enter file name: ")
+files = input("Enter folder name: ")
+rows = int(input("Enter rows quantity: "))
+cols = int(input("Enter cols quantity: "))
+frame_duration = int(input("Enter frame duration: "))
+generateFinal = input("Generate Final (Y/N)? ")
+print()
 
-# Load the sprite sheet
-sprite_sheet_path = "frames/"+image+".png"
-sprite_sheet = Image.open(sprite_sheet_path)
+os.makedirs("gif", exist_ok=True)
+os.makedirs("mp4", exist_ok=True)
+os.makedirs("cutted", exist_ok=True)
 
-# Define the number of rows and columns
-rows, cols = 3, 3
+all_frames = []
+finalName = ""
 
-# Calculate width and height of each frame
-frame_width = sprite_sheet.width // cols
-frame_height = sprite_sheet.height // rows
-print(frame_width,"x",frame_height)
+frame_files = sorted([f for f in os.listdir(files) if f.endswith(".png")])
 
-# Extract frames
-frames = []
-for row in range(rows):
-    for col in range(cols):
-        left = col * frame_width
-        upper = row * frame_height
-        right = left + frame_width
-        lower = upper + frame_height
-        frame = sprite_sheet.crop((left, upper, right, lower))
-        frames.append(frame)
+for image in frame_files:
+    name = os.path.splitext(image)[0]
+    print(f"Processing {image}...")
 
-# Save as GIF
-gif_path = "gif/"+image+".gif"
-frames[0].save(gif_path, save_all=True, append_images=frames[1:], optimize=False, duration=100, loop=0)
+    sprite_sheet_path = os.path.join(files, image)
+    sprite_sheet = Image.open(sprite_sheet_path)
 
-print("GIF:", gif_path)
+    frame_width = sprite_sheet.width // cols
+    frame_height = sprite_sheet.height // rows
+    print(f"{frame_width} x {frame_height}")
 
-draw = ImageDraw.Draw(sprite_sheet)
+    frames = []
+    for row in range(rows):
+        for col in range(cols):
+            left = col * frame_width
+            upper = row * frame_height
+            right = left + frame_width
+            lower = upper + frame_height
+            frame = sprite_sheet.crop((left, upper, right, lower))
+            frames.append(frame)
 
-for row in range(1, rows):
-    y = row * frame_height
-    draw.line([(0, y), (sprite_sheet.width, y)], fill="red", width=1)
+    all_frames.extend(frames)  
 
-# Draw vertical lines
-for col in range(1, cols):
-    x = col * frame_width
-    draw.line([(x, 0), (x, sprite_sheet.height)], fill="red", width=1)
+    gif_path = os.path.join("gif", f"{name}.gif")
+    frames[0].save(gif_path, save_all=True, append_images=frames[1:], optimize=False, duration=frame_duration, loop=0)
+    print("GIF:", gif_path)
 
-# Save the image with grid lines
-grid_image_path = "cutted/"+image+".png"
-sprite_sheet.save(grid_image_path)
+    draw = ImageDraw.Draw(sprite_sheet)
+    for row in range(1, rows):
+        y = row * frame_height
+        draw.line([(0, y), (sprite_sheet.width, y)], fill="red", width=1)
+    for col in range(1, cols):
+        x = col * frame_width
+        draw.line([(x, 0), (x, sprite_sheet.height)], fill="red", width=1)
 
-print("CUTTED:", grid_image_path)
+    grid_image_path = os.path.join("cutted", f"{name}.png")
+    sprite_sheet.save(grid_image_path)
+    finalName += name + "-"
+    print("CUTTED:", grid_image_path)
+    print(f"-----FILE {name} FINISHED-----\n")
 
-mp4_path = "mp4/" + image + ".mp4"
-# Load the GIF
-gif = Image.open(gif_path)
-frames = [frame.copy().convert('RGB') for frame in ImageSequence.Iterator(gif)]
-width, height = frames[0].size
+if all_frames and generateFinal.lower() == "y":
+    unified_gif = f"gif/{finalName}.gif"
+    unified_mp4 = f"mp4/{finalName}.mp4"
 
-# Define video writer
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-video = cv2.VideoWriter(mp4_path, fourcc, 10, (width, height))  # 10 FPS
+    print(f"Processing Final GIF...")
+    all_frames[0].save(unified_gif, save_all=True, append_images=all_frames[1:], optimize=False, duration=frame_duration, loop=0)
+    print("Unified GIF:", unified_gif)
 
-# Write each frame
-for frame in frames:
-    frame_cv = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
-    video.write(frame_cv)
+    print(f"Processing Final MP4...")
+    width, height = all_frames[0].size
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video = cv2.VideoWriter(unified_mp4, fourcc, 1000 // frame_duration, (width, height))
 
-video.release()
-print("MP4:", mp4_path)
+    for frame in all_frames:
+        frame_cv = cv2.cvtColor(np.array(frame.convert("RGB")), cv2.COLOR_RGB2BGR)
+        video.write(frame_cv)
+
+    video.release()
+    print("Unified MP4:", unified_mp4)
+print(f"-----PROCESS FINISHED-----")
