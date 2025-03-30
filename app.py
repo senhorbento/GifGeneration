@@ -46,6 +46,20 @@ for image in frame_files:
     frames[0].save(gif_path, save_all=True, append_images=frames[1:], optimize=False, duration=frame_duration, loop=0)
     print("GIF:", gif_path)
 
+    gif = Image.open(gif_path)
+    frames = [frame.copy().convert('RGB') for frame in ImageSequence.Iterator(gif)]
+    width, height = frames[0].size
+
+    mp4_path = os.path.join("mp4", f"{name}.mp4")
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video = cv2.VideoWriter(mp4_path, fourcc, frame_duration/10, (width, height))
+    for frame in frames:
+        frame_cv = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
+        video.write(frame_cv)
+
+    video.release()
+    print("MP4:", mp4_path)
+
     draw = ImageDraw.Draw(sprite_sheet)
     for row in range(1, rows):
         y = row * frame_height
